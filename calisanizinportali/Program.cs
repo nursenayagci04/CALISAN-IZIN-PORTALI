@@ -32,6 +32,11 @@ namespace CalisanTakip
                 Console.WriteLine("Hata: Yaş 0 veya negatif olamaz.");
                 return;
             }
+            if (!IsValidTcKimlikNo(tcKimlikNo))
+            {
+                Console.WriteLine("Hata: TC Kimlik No 11 karakter olmalı ve sadece rakamlardan oluşmalıdır.");
+                return;
+            }
             this.ad = ad;
             this.soyad = soyad;
             this.yas = yas;
@@ -70,6 +75,16 @@ namespace CalisanTakip
             return true;
         }
 
+        private bool IsValidTcKimlikNo(string tcKimlikNo)
+        {
+            if (tcKimlikNo.Length != 11 || !tcKimlikNo.All(char.IsDigit))
+            {
+                Console.WriteLine("Hata: TC Kimlik No 11 haneli ve yalnızca rakamlardan oluşmalıdır.");
+                return false;
+            }
+            return true;
+        }
+
         public bool SifreDogrula(string sifre)
         {
             return this.sifre == sifre;
@@ -92,6 +107,11 @@ namespace CalisanTakip
                 Console.WriteLine("Hata: Geçersiz çalışan nesnesi.");
                 return;
             }
+            if (!IsValidTcKimlikNo(calisan.TcKimlikNo))
+            {
+                Console.WriteLine("Hata: TC Kimlik No geçersiz. Çalışan eklenemedi.");
+                return;
+            }
             calisanlar.Add(calisan);
         }
 
@@ -106,6 +126,11 @@ namespace CalisanTakip
             {
                 Console.WriteLine("Hata: Çalışan bulunamadı.");
             }
+        }
+
+        private bool IsValidTcKimlikNo(string tcKimlikNo)
+        {
+            return tcKimlikNo.Length == 11 && tcKimlikNo.All(char.IsDigit);
         }
 
         public void GirisYap(string ad, string soyad, string sifre)
@@ -144,6 +169,12 @@ namespace CalisanTakip
                                 Console.Write("Yeni çalışanın şifresi: ");
                                 string sifreCalisan = Program.SifreGizle();
 
+                                if (!IsValidTcKimlikNo(tcKimlikNoCalisan))
+                                {
+                                    Console.WriteLine("Hata: Geçersiz TC Kimlik No. Çalışan eklenemedi.");
+                                    return;
+                                }
+
                                 Calisan yeniCalisan = new Calisan(adCalisan, soyadCalisan, 30, "Departman", "Pozisyon", tcKimlikNoCalisan, sifreCalisan);
                                 Console.Write("Çalışan eklemek istiyor musunuz? (evet/hayır): ");
                                 string onay = Console.ReadLine().ToLower();
@@ -151,6 +182,19 @@ namespace CalisanTakip
                                 {
                                     CalisanEkle(yeniCalisan);
                                     Console.WriteLine($"{yeniCalisan.Ad} {yeniCalisan.Soyad} başarıyla eklendi.");
+                                    Console.WriteLine("   *****     *****   ");
+                                    Console.WriteLine("  *******   *******  ");
+                                    Console.WriteLine(" ********* ********* ");
+                                    Console.WriteLine(" ******************* ");
+                                    Console.WriteLine("  *****************  ");
+                                    Console.WriteLine("   ***************   ");
+                                    Console.WriteLine("    *************    ");
+                                    Console.WriteLine("     ***********     ");
+                                    Console.WriteLine("      *********      ");
+                                    Console.WriteLine("       *******       ");
+                                    Console.WriteLine("        *****        ");
+                                    Console.WriteLine("         ***         ");
+                                    Console.WriteLine("          *          ");
                                 }
                                 else
                                 {
@@ -158,104 +202,6 @@ namespace CalisanTakip
                                 }
                                 Console.WriteLine("------------------------------------------------------");
                             }
-                            else if (secim == "2")
-                            {
-                                Console.WriteLine("------------------------------------------------------");
-                                Console.Write("Çıkarmak istediğiniz çalışanın TC Kimlik No: ");
-                                string tcKimlikNoCikar = Console.ReadLine();
-                                Console.Write("Çalışan çıkarmak istiyor musunuz? (evet/hayır): ");
-                                string onay = Console.ReadLine().ToLower();
-                                if (onay == "evet")
-                                {
-                                    CalisanCikar(tcKimlikNoCikar);
-                                    Console.WriteLine("Çalışan başarıyla çıkarıldı.");
-                                }
-                                else
-                                {
-                                    Console.WriteLine("Çalışan çıkarılmadı.");
-                                }
-                                Console.WriteLine("------------------------------------------------------");
-                            }
-                            else if (secim == "3")
-                            {
-                                Console.WriteLine("------------------------------------------------------");
-                                Console.Write("Yönetici izin talep etmek istiyor musunuz? (evet/hayır): ");
-                                string izinOnay = Console.ReadLine().ToLower();
-                                if (izinOnay == "evet")
-                                {
-                                    Console.Write("Kaç gün izin kullanmak istiyorsunuz?: ");
-                                    int izinGun;
-                                    if (int.TryParse(Console.ReadLine(), out izinGun) && izinGun > 0)
-                                    {
-                                        if (calisan.IzinKullan(izinGun))
-                                        {
-                                            Console.WriteLine("Yönetici izni onaylandı.");
-                                        }
-                                        else
-                                        {
-                                            Console.WriteLine("Yönetici izni reddedildi.");
-                                        }
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine("Geçersiz izin günü.");
-                                    }
-                                }
-                                else
-                                {
-                                    Console.WriteLine("Yönetici izin talebini reddetti.");
-                                }
-                                Console.WriteLine("------------------------------------------------------");
-                            }
-                            else
-                            {
-                                Console.WriteLine("Geçersiz seçim.");
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("------------------------------------------------------");
-                            Console.WriteLine("İzin talebiniz için yönetici onayı gerekmektedir.");
-                            Console.WriteLine("Kaç gün izin kullanmak istiyorsunuz?: ");
-                            int izinGun;
-                            if (int.TryParse(Console.ReadLine(), out izinGun) && izinGun > 0)
-                            {
-                                Console.WriteLine("İzin talebiniz yöneticinize sunulacaktır.");
-                                Console.WriteLine("------------------------------------------------------");
-                                Console.Write("Yönetici adı: ");
-                                string yoneticiAd = Console.ReadLine();
-                                Console.Write("Yönetici soyadı: ");
-                                string yoneticiSoyad = Console.ReadLine();
-                                Console.Write("Yönetici şifresi: ");
-                                string yoneticiSifre = Program.SifreGizle();
-                                Console.WriteLine("------------------------------------------------------");
-
-                                Calisan yonetici = calisanlar.Find(c => c.YoneticiMi && c.Ad.Equals(yoneticiAd, StringComparison.OrdinalIgnoreCase) && c.Soyad.Equals(yoneticiSoyad, StringComparison.OrdinalIgnoreCase));
-                                if (yonetici != null && yonetici.SifreDogrula(yoneticiSifre))
-                                {
-                                    Console.WriteLine($"{yonetici.Ad} {yonetici.Soyad} onayı bekleniyor.");
-                                    Console.Write("Yönetici izin onayını veriyor mu? (evet/hayır): ");
-                                    string onay = Console.ReadLine().ToLower();
-
-                                    if (onay == "evet")
-                                    {
-                                        calisan.IzinKullan(izinGun);
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine("İzin reddedildi.");
-                                    }
-                                }
-                                else
-                                {
-                                    Console.WriteLine("Yönetici bulunamadı veya şifre yanlış.");
-                                }
-                            }
-                            else
-                            {
-                                Console.WriteLine("Hatalı gün sayısı girdiniz.");
-                            }
-                            Console.WriteLine("------------------------------------------------------");
                         }
                         return;
                     }
@@ -275,6 +221,7 @@ namespace CalisanTakip
         static void Main(string[] args)
         {
             Console.WriteLine("Hoşgeldiniz!");
+
             Console.WriteLine("   *****     *****   ");
             Console.WriteLine("  *******   *******  ");
             Console.WriteLine(" ********* ********* ");
@@ -289,17 +236,12 @@ namespace CalisanTakip
             Console.WriteLine("         ***         ");
             Console.WriteLine("          *          ");
 
+
             CalisanYonetici yonetici = new CalisanYonetici();
             var calisan1 = new Calisan("Nehir", "Saygılı", 20, "Mühendislik", "Kıdemli Mühendis", "12345678901", "333", 60, true);
-            var calisan2 = new Calisan("Nursena", "Yağcı", 20, "Pazarlama", "Yönetici", "98765432109", "777", 60, true);
-            var calisan3 = new Calisan("Ekin", "Koç", 35, "Muhasebe", "Uzman", "11223344556", "1992", 30);
-            var calisan4 = new Calisan("Boran", "Kuzum", 32, "İK", "İK Uzmanı", "1111111111", "1881", 18);
-            var calisan5 = new Calisan("Burçin", "Terzioğlu", 44, "Bilişim", "Kıdemli Yazılım Geliştirici", "55667788990", "5678", 45);
             yonetici.CalisanEkle(calisan1);
+            var calisan2 = new Calisan("Nursena", "Yağcı", 20, "Pazarlama", "Yönetici", "98765432109", "777", 60, true);
             yonetici.CalisanEkle(calisan2);
-            yonetici.CalisanEkle(calisan3);
-            yonetici.CalisanEkle(calisan4);
-            yonetici.CalisanEkle(calisan5);
 
             Console.WriteLine("Giriş yapmak için adınızı, soyadınızı ve şifrenizi giriniz:");
             Console.Write("Ad: ");
@@ -325,6 +267,7 @@ namespace CalisanTakip
             Console.WriteLine("        *****        ");
             Console.WriteLine("         ***         ");
             Console.WriteLine("          *          ");
+
         }
 
         public static string SifreGizle()
